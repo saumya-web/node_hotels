@@ -15,7 +15,7 @@ async function handlegetBy(req,res){
     return res.json (User); 
 }
 async function handleUpdateBy(req,res){
-    const User = await Data.findByAndUpdate(req. params. id ,  req.body,{ new:true , runValidate:true});
+    const User = await Data.findByAndUpdate(req. params. id ,  req.body,{ new:true , runValidators:true});
     if (!User)res.status(404).json("all the data are not required")
     return res.json (User); 
 }

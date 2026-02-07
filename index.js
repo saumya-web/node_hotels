@@ -14,5 +14,5 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/hotel',dataRouter);
 app.use('/qusien',menuRouter);
-app.listen(PORT,()=>{console.log(`mongodb is connected${PORT}`)
+app.listen(PORT,()=>{console.log(`server is connected ${PORT}`)
 });

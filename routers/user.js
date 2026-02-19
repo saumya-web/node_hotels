@@ -1,12 +1,16 @@
 const express = require('express')
-const {handleGetBy,handlegetBy,handleUpdateBy,handleDeleteBy,handleCreate,handleGetByWork,handleLogin} = require('../controllers/user')
+const {handleGetAll,handlegetBy,handleUpdateBy,handleDeleteBy,handleCreate,handleGetByWork,handleLogin,handleProfile} = require('../controllers/user')
+const{jsonAuthMiddleware}= require('../jwt');
 const router = express.Router();
 
-router.get('/',handleGetBy);
+
 router.post('/signup',handleCreate);
+router.post('/login',handleLogin);
+router.get('/profile',jsonAuthMiddleware,handleProfile);
+router.get('/',jsonAuthMiddleware,handleGetAll);
 router.patch('/:id',handleUpdateBy);
 router.delete('/:id',handleDeleteBy);
 router.get('/:id',handlegetBy);
-router.get('/',handleGetByWork);
-router.post('/login',handleLogin);
+router.get('/work',handleGetByWork);
+
 module.exports = router;

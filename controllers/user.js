@@ -1,6 +1,6 @@
 const Data = require('../models/user');
 const{jsonAuthMiddleware, generateToken}= require('../jwt');
-async function handleGetBy(req,res){
+async function handleGetAll(req,res){
     try{
     const User = await Data.find({})
     return res.json(User);
@@ -11,17 +11,17 @@ async function handleGetBy(req,res){
     }
 } ;
 async function handlegetBy(req,res){
-    const User = await Data.findBy(req.params.id );
+    const User = await Data.findById(req.params.id );
     if (!User)res.status(404).json("all the data are not found")
     return res.json (User); 
 }
 async function handleUpdateBy(req,res){
-    const User = await Data.findByAndUpdate(req. params. id ,  req.body,{ new:true , runValidators:true});
+    const User = await Data.findByIdAndUpdate(req. params. id ,  req.body,{ new:true , runValidators:true});
     if (!User)res.status(404).json("all the data are not required")
     return res.json (User); 
 }
 async function handleDeleteBy(req,res){
-    const User = await Data.findByAndDelete(req.params.id)
+    const User = await Data.findByIdAndDelete(req.params.id)
     if (!User)res.status(404).json("all the data are  not required")
     return  res.json (User); 
 }
@@ -53,23 +53,47 @@ async function handleCreate(req,res){
 //for login
 async function handleLogin(req,res){
     try{
-        //extract the username , password
         const {username, password} = req.body;
-        const user = await Data.findOne({username:username})
-        if(!user || !await comparePassword(password , user.password)){
-            return res.status(404).json("invalid password");
+
+        const user = await Data.findOne({ username });
+
+        if(!user){
+            return res.status(401).json({error:"Invalid username or password"});
         }
-        //generate Token
+
+        const isMatch = await user.comparePassword(password);
+
+        if(!isMatch){
+            return res.status(401).json({error:"Invalid username or password"});
+        }
+
         const payload = {
-           id : user.id,
-           username :user.username
-        }
+            id: user._id,
+            username: user.username
+        };
+
         const token = generateToken(payload);
-        res.json({token})
+
+        return res.status(200).json({token});
+
     }catch(err){
-        return res.status(404).json("internal server error")
+        console.error("LOGIN ERROR:", err);
+        return res.status(500).json({error:"internal server error"});
     }
-} 
+}
+async function handleProfile(req , res) {
+    try{
+        const userData = req.userpayload;
+        console.log("userData",userData);
+        
+    const userId = userData.id
+    const user = await Data.findById(userId)
+
+    return res.status(200).json(user)
+    }catch(err){
+    res.status(500).json({error:"internal server error"})
+    }
+}
 
 
 // to get a specific or 1 argument type data
@@ -84,7 +108,7 @@ async function handleGetByWork(req,res){
         }
     }
     catch(err){
-        res.status(500).json("server error")
+        res.status(500).json({error :" internal server error"})
     }
 }
-module.exports={handleGetBy,handlegetBy,handleUpdateBy,handleDeleteBy,handleCreate,handleGetByWork,handleLogin }
+module.exports={handleGetAll,handlegetBy,handleUpdateBy,handleDeleteBy,handleCreate,handleGetByWork,handleLogin,handleProfile }

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const brcypt = require('bcrypt')
+const bcrypt = require('bcrypt')
 const dataSchema = new mongoose.Schema({
     name:{
         type:String,
@@ -50,13 +50,13 @@ dataSchema.pre('save',async function(next){   // pre is a middleware when the sa
     next();  // provide by mongoose when all the data are set and the transfer the data to the mongoose db.
   }
   catch(err){
-     return next(err)
+     return (err)
   }  
 })
 
 dataSchema.methods.comparePassword = async function(candiadatePassword){
     try{
-        const isMatch = await brcypt.compare(candiadatePassword,this.password);
+        const isMatch = await bcrypt.compare(candiadatePassword,this.password);
         return isMatch;
     }
     catch(err){

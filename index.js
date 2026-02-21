@@ -6,6 +6,8 @@ const PORT = process.env.PORT || 3120
 const passport = require('./auth')
 const dataRouter = require('./routers/user')
 const menuRouter = require('./routers/user1')
+const picRouter = require('./routers/user2')
+const upload = require('./middleware/upload')
 
 //middleware
 const logRequest = (req , res, next) =>{
@@ -21,9 +23,11 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use('/uploads', express.static('uploads'));
 
 app.use(logRequest);
 app.use('/hotel',dataRouter);
 app.use('/qusien',menuRouter);
+app.use('/photo',picRouter);
 app.listen(PORT,()=>{console.log(`server is connected ${PORT}`)
 });

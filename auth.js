@@ -13,6 +13,7 @@ passport.use(new LocalStrategy(async (username, password, done)=>{  //function i
         else
             return done(null,false,{message:'incorect password'})
     }catch{
+        
         return done(error);
     }
 }));
